@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portero del Edificio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f0f0f0;
+      color: #333;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    select, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Llamar a un Departamento</h1>
+    <form id="callForm">
+      <label for="destino">Elegí el destino:</label>
+      <select id="destino" required>
+        <option value="portería">Portería</option>
+      </select>
+      <button type="submit">Llamar</button>
+    </form>
+    <p id="mensaje"></p>
+  </div>
+
+  <script>
+    const destinoSelect = document.getElementById("destino");
+    const mensaje = document.getElementById("mensaje");
+
+    for (let piso = 1; piso <= 14; piso++) {
+      ["A", "B", "C"].forEach(letra => {
+        const option = document.createElement("option");
+        option.value = `${piso}${letra}`;
+        option.textContent = `Piso ${piso}, Depto ${letra}`;
+        destinoSelect.appendChild(option);
+      });
+    }
+
+    function getEntrada() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("entrada") || "desconocida";
+    }
+
+    document.getElementById("callForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const destino = destinoSelect.value;
+      const entrada = getEntrada();
+
+      mensaje.textContent = `Enviando solicitud a ${destino} desde ${entrada}...`;
+
+      try {
+        const respuesta = await fetch("/api/llamar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ destino, origen: entrada })
+        });
+        
+        if (respuesta.ok) {
+          mensaje.textContent = `Llamado enviado a ${destino}. Espere respuesta.`;
+        } else {
+          mensaje.textContent = `Error al llamar a ${destino}. Intente nuevamente.`;
+        }
+      } catch (error) {
+        mensaje.textContent = `Error de red. Verifique su conexión.`;
+        console.error("Error en la solicitud:", error);
+      }
+    });
+  </script>
+</body>
+</html>
