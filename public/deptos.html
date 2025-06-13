@@ -55,6 +55,7 @@
   </div>
 
   <script>
+    
     const destinoSelect = document.getElementById("destino");
     const mensaje = document.getElementById("mensaje");
 
@@ -69,7 +70,7 @@
 
     function getEntrada() {
       const params = new URLSearchParams(window.location.search);
-      return params.get("entrada") || "desconocida";
+      return params.get("entrada") || "Calle Planes 832";
     }
 
     document.getElementById("callForm").addEventListener("submit", async (e) => {
@@ -77,22 +78,24 @@
       const destino = destinoSelect.value;
       const entrada = getEntrada();
 
+      // mensaje.textContent = `Enviando solicitud a ${destino} desde Calle Planes 832...`;
       mensaje.textContent = `Enviando solicitud a ${destino} desde ${entrada}...`;
 
       try {
-        const respuesta = await fetch("/api/llamar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ destino, origen: entrada })
-        });
+        // const respuesta = await fetch("/api/llamar", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json"
+        //   },
+        //   body: JSON.stringify({ destino, origen: entrada })
+        // });
+        window.location.href="https://webrtc-app-7ah6.onrender.com/llamado.html";
         
-        if (respuesta.ok) {
-          mensaje.textContent = `Llamado enviado a ${destino}. Espere respuesta.`;
-        } else {
-          mensaje.textContent = `Error al llamar a ${destino}. Intente nuevamente.`;
-        }
+        // if (respuesta.ok) {
+        //   mensaje.textContent = `Llamado enviado a ${destino}. Espere respuesta.`;
+        // } else {
+        //   mensaje.textContent = `Error al llamar a ${destino}. Intente nuevamente.`;
+        // }
       } catch (error) {
         mensaje.textContent = `Error de red. Verifique su conexión.`;
         console.error("Error en la solicitud:", error);
